@@ -89,7 +89,7 @@ Neste projeto desenvolvemos um programa no \textit{Octave} para implementar um c
 
 \begin{verbatim}
 
-function [funcao,coeficientes]=MMQ(x,f,g) #x é a matriz com valores de x, f a matriz f(x) e g o grau
+function [funcao,coeficientes]=MMQ(x,f,g)
 A=zeros(g+1);
 b=zeros(g+1,1);
 faux=zeros(g+1,length(x));
@@ -119,35 +119,42 @@ endfunction
 
 \end{verbatim}
 
-Esse programa foi salvo com o nome de "MMQ.m". Dessa forma, o \textit{Octave} poderá encontrar os valores dos coeficientes de um polinômio e fazer um gráfico que se aproxima dos valores coletados digitando os dados de $x$, de $f(x)$ em cada um desses pontos e do grau do polinômio desejado.
+Esse programa foi salvo com o nome de "MMQ.m". Dessa forma, o \textit{Octave} poderá encontrar os valores dos coeficientes de um polinômio e fazer um gráfico que se aproxima dos valores coletados digitando os dados de $x$, de $f(x)$ em cada um desses pontos e do grau do polinômio desejado. Para encontrar os coeficientes ele irá usar um programa auxiliar, já elaborado pelo professor José Eduardo Castilho salvo com o nome de \textit{EGauss.m}.
 
-Inserimos nesse programa os dados de x e f(x) conforme as tabelas abaixo:
+Inserimos nesse programa os dados de x e f(x) conforme a tabela abaixo:
 
-\begin{center}
-\begin{tabular}{c||c|c|c|c|c|c}
-
-x & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 \\ \hline\hline
-f(x)&0.101&0.209&0.335&0.489&0.687&0.945\\ \hline\hline\hline
+\begin{table}[ht]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+x & 0.1 & 0.2 & 0.3 & 0.4 & 0.5 & 0.6 & 0.7 & 0.8 & 0.9 & 1.0 & 1.1 & 1.2 \\ 
+\hline
+f(x) & 0.101 & 0.209 & 0.335 & 0.489 & 0.687 & 0.945 & 1.283 & 1.721 & 2.285 & 3.000 & 3.895 & 5.001\\ 
+\hline
 
 \end{tabular}
+\end{table}
 
-\begin{tabular}{c||c|c|c|c|c|c}
+Podemos ver o resultado através da figura \ref{octave1} e o gráfico através da figura \ref{grafico1}
 
-x & 0.7 & 0.8 & 0.9 & 1.0 & 1.1 & 1.2 \\ \hline\hline
-f(x) &1.283&1.721&2.285&3.000&3.895&5.001
-\end{tabular}
-\end{center}
-
-Podemos ver o resultado através da figura \ref{octave1} e o gráfico através da figura ???
-
-\begin{figure}[h]
+\begin{figure}[ht]
 
     \center
 
     \includegraphics[width=12cm]{octave1.png}
-    \caption{Precisões da Máquina e do \textit{Octave} \label{octave1}}
+    \caption{Método dos Mínimos Quadrados \label{octave1}}
     
 \end{figure}
+
+\begin{figure}[ht]
+
+    \center
+
+    \includegraphics[width=7cm]{grafico1.png}
+    \caption{Gráfico MMQ \label{grafico1}}
+    
+\end{figure}
+
 
 
 \section{Resultados}
@@ -159,189 +166,225 @@ Podemos observar pelos resultados e pelo gráfico que, neste caso, a aproximaç�
 
 
 
-Encontrar essa raiz é equivalente a encontrar o zero da função $ f(x) = x^p - a $.
+Baseado na Regra de Simpson, vamos determinar uma regra de integração para a integral dupla:
 
-\section{Encontrando um intervalo}
+$$\int_a^b\int_c^d f(x,y)\, dx\, dy$$
 
-A primeira questão consiste em encontrar um intervalo que depende de $a$ e que contenha a raiz. Como queremos uma raiz positiva, podemos separar em duas situações: $a<1$ e $a>1$ 
+e Aplicá-la para calcular uma aproximação para:
 
-\begin{itemize}
-\item Se $a<1$, multiplicando os dois lados por $a$, $p$ vezes,  temos que:
+$$I=\int_0^1\int_0^1 x^2 + y^2\, dx\, dy$$
 
-\begin{center}
+Para resolvermos uma integral dupla, temos que começar de dentro para fora, ou seja, primeiro fixamos $y$ e resolvemos a integral $\displaystyle\int_c^d f(x,y)\, dx$ e posteriormente fixamos x e resolvemos a integral em relação a y. 
 
+Assim teremos: $\displaystyle\int_a^b\int_c^d f(x,y)\, dx\, dy$, chamando a integral $\displaystyle\int_c^d f(x,y)\, dx $ de $G(x)$, podemos escrever:
 
-$a^2<a$  \\ $a^3<a^2<a$ \\ $ \vdots $ \\ $a^p< \cdots < a^3 < a^2 < a$
-
-\end{center}
-
-Então: 
-\begin{center}
-
-$ a^p<a<1 $
-
-$ \sqrt[p]{a^p}<\sqrt[p]{a}<\sqrt[p]{1} $
-
-$ a<\sqrt[p]{a}<1 $
+$$
+I=\displaystyle\int_a^b G(x)\, dx
+$$
 
 
-\end{center}
+Agora vamos resolver a integral: $I =\displaystyle \int_0^1 \displaystyle\int_0^1 x^2 + y^2\, dx\, dy$ usando a forma acima e o Teorema Fundamental do Cálculo:
 
-Assim podemos usar o intervalo $[a,1]$.
+$$
+\int_0^1 x^2 + y^2\, dx = \left[\frac{x^3}{3} + y^2\cdot x\right]_0^1 =\left[\frac{1^3}{3}+y^2\cdot 1\right]- \left[\frac{0^3}{3}+y^2\cdot 0\right] = \frac{1}{3}+ y^2
+$$
 
-\item Se $a>1$, como queremos usar um intervalo que depende de $a$, e como queremos apenas uma raiz positiva, ela será menor que $a$, logo podemos usar o intervalo $[1,a]$.
+Portanto:
 
+$$
+I=\int_0^1 \frac{1}{3}+ y^2\, dy = \left[\frac{y}{3} + \frac{y^3}{3}\right]_0^1 =\left[\frac{1}{3} + \frac{1^3}{3}\right]-\left[\frac{0}{3} + \frac{0^3}{3}\right]= \frac{1}{3} + \frac{1}{3} = \frac{2}{3} \cong 0.66666667
+$$
 
-\end{itemize}
+\newpage
 
-\section{Critérios de Convergência}
+A partir desse ponto vamos implementar um programa no Octave (usando o Simpson 1/3) que resolva a integral dupla: $I=\displaystyle\int_0^1\displaystyle\int_0^1 x^2 + y^2\, dx\, dy$
 
-Nesta seção verificaremos se a função de iteração $ \phi (x) = \frac{a}{x^{p-1}} $ satisfaz os critérios de convergência do Método Iterativo Linear.
+A ideia é utilizar a 1ª Regra de Simpson ou regra do 1/3 duas vezes, de tal forma que:
 
-\begin{enumerate}
+$$ 
+I=\displaystyle\int_0^1\displaystyle\int_0^1 x^2 + y^2\, dx\, dy 
+$$
 
-\item Levando em consideração os intervalos citados na seção anterior para os valores de $a$, a função $ \phi (x) = \frac{a}{x^{p-1}} $ é contínua. Devemos então calcular a sua derivada:
-\begin{center}
-$ \phi (x) = \frac{a}{x^{p-1}} = a \cdot x^{1-p} $ \\ $ \phi ' (x) = a \cdot (1-p) \cdot x^{-p}$ \\  $ \phi ' (x) = \frac {a \cdot (1-p)}{x^p}$
+Fazendo 
+$$
+f(x,y)=x^2 + y^2
+$$
+e
+$$
+G(y) = \int_{0}^1 f(x,y) dx 
+$$
+teremos:
+$$
+I=\int_0^1 G(y) dy
+$$
+Assim calculamos $G(y_i)$ com $i \in \{0,1,2\}$
+$$
+G(y_i)= \frac {h} {3} \cdot \left[ f(x_0,y_i) + 4f(x_1,y_i) + f(x_2,y_i) \right]
+$$
+e, novamente usando a regra de Simpson, temos:
+$$
+I=\int_0^1 G(y_i) dy = \frac {h} {3} \cdot \left[ G(y_0) + 4G(y_1) + G(y_2) \right]
+$$
 
-\end{center}
-
-Assim, $ \phi '(x) $ também é contínua nos intervalos considerados.
-
-\item Aqui temos 2 casos:
-
-\begin{itemize}
-
-\item Se $a<1$ escolhemos anteriormente o intervalo $[a,1]$. Seja $x \in [a,1]$, então $x^p\le 1$, mas $\frac{1}{x^p}\geq1$, então, como $p\geq2$ , podemos tomar, por exemplo, $x=a$, e assim:
-
-\begin{center}
-
-$ \left| \phi ' (x)\right| = \left| \frac {a \cdot (1-p)}{x^p} \right|= \left| \frac {a \cdot (1-p)}{a^p} \right| = \left|\frac{1-p}{a^{p-1}} \right| \geq1$
-
-\end{center}
-
-Desta forma, no intervalo $[a,1]$ não podemos afirmar a sua convergência.
-
-\item Se $a>1$, como escolhemos o intervalo $[1,a]$, podemos escolher $x=1$, e assim temos:
-
-\begin{center}
-
- $ \left| \phi ' (x)\right| = \left| \frac {a \cdot (1-p)}{x^p} \right| = \left| a \cdot (1-p)\right|$
-
-\end{center}
-
-E assim, como $p\geq2$ e $a\geq1$, temos que $|\phi(x)'|$ será maior que 1 e novamente não podemos afirmar a sua convergência.
-
-\end{itemize}
-
-\end{enumerate}
-
-\section{M.N.R para raízes}
-
-Vamos usar o Método de Newton-Raphson para gerar um processo iterativo que encontra a raiz p-ésima positiva de um número $a$ também positivo. Para isso, temos que:
-
-\begin{center}
-
-$ x_{n+1} = x_k - \frac{f(x_k)}{f'(x_k)}$ \\ $ x_{n+1} = x_k - \frac{x^p - a }{p \cdot {x_k}^{p-1}}$ \\ $ x_{n+1} = x_k - \left[ \frac{x^p}{p \cdot {x_k}^{p-1}} - \frac{a}{p \cdot {x_k}^{p-1}} \right]$ \\ $ x_{n+1} = x_k -  \frac{x^p}{p \cdot {x_k}^{p-1}} + \frac{a}{p \cdot {x_k}^{p-1}} $ \\ $ x_{n+1} = \frac {p \cdot x_k -  {x_k}}{p} + \frac{a}{p \cdot {x_k}^{p-1}} $ \\ $ x_{n+1} = \frac {1}{p} \left[( p-1)x_k + \frac{a}{{x_k}^{p-1}} \right] $
-
-\end{center}
-
-\section{Implementando o Programa de Iteração}
-
-Para calcularmos a raiz p-ésima positiva do número $a$ usaremos o seguinte programa:
+A programação em \textit{Octave} ficará assim:
 
 \begin{verbatim}
-function y=newrap(a,p,Ep)
-  x0=a;
-  x1=(1/p)*((p-1)*a+(a/(a^(p-1))));
-  while (abs(x1-x0)>Ep)
-    x0=x1;
-    x1=(1/p)*((p-1)*x0+(a/(x0^(p-1))));
-  endwhile
-  y=x1;
- endfunction
+function I=integraldupla(a,b,c,d)
+   h1=(b-a)/2;
+   h2=(d-c)/2;
+   x=[a (a+h1) b];
+   y=[c (c+h2) d];
+   for i=1:3
+      G(i)=(h2/3)*((x(1)^2+y(i)^2)+4*(x(2)^2+y(i)^2)+(x(3)^2+y(i)^2));
+   endfor
+   I=(h1/3)*(G(1)+4*G(2)+G(3));
+endfunction
 \end{verbatim}
 
-Onde os valores $a$, $p$ e $Ep$ são respectivamente o radicando, o índice e a precisão da raiz. 
+O programa será chamado indicando os valores de início e fim dos intervalos de integração $a, b, c, d$.
 
-O programa deve ser salvo com o mesmo nome da função, neste caso foi \textbf{newrap} (NEWton-RAPhson) e para calcular por exemplo a raiz 5\textsuperscript{\d a} de 8 com uma precisão de $10^{-10}$, na janela de comandos do \textit{Octave}, escrevemos o comando \textbf{y=newrap(8,5,10}\verb|^|\textbf{(-10))}, como podemos ver na figura \ref{octave2}.
+\newpage
 
+O programa após a compilação traz como resultado a figura \ref{octave2}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 
     \center
 
     \includegraphics[width=12cm]{octave2.png}
-    \caption{retirando raízes p-ésimas \label{octave2}}
+    \caption{Regra de Simpson \label{octave2}}
     
 \end{figure}
 
 \section{Resultados}
 
-Podemos observar que pelo Método Newton-Raphson a forma de determinar uma raiz p-ésima através da iteração $ x_{n+1} = \frac {1}{p} \left[( p-1)x_k + \frac{a}{{x_k}^{p-1}} \right] $ é muito eficaz computacionalmente e que, mesmo que $ \phi ' (x) = \frac {a \cdot (1-p)}{x^p}$ seja maior que 1, ele converge e com uma ótima precisão.
+Apesar de ser uma regra muito simples, podemos perceber olhando a resolução através do Teorema Fundamental do Cálculo e os resultados obtidos por essa regra que é eficiente e que conseguimos um resultado muito próximo.
+
+
+\chapter{Método de Euler}
+
+Neste projeto vamos fazer um programa para resolver um Problema de Valor Inicial utilizando o Método de Euler. Vamos encontrar uma aproximação para $y(1.2)$ com $h = 0.1$, para o P.V.I. abaixo:
+
+$$
+\left\{\begin{array}{l}
+y^{''} = 3y^{'} - 2y \\ y(0) = -1 \\ y^{'}(0) = 0 
+\end{array}\right.
+$$
+
+Fazendo: $y^{'}=z$ e $z^{'}=3z - 2y$ resolver esse P.V.I é o mesmo que resolver um sistema do tipo::
+
+$$
+\left\{\begin{array}{l}
+y^{'} = z \\ z^{'} = 3z-2y \\ y(0) = -1 \\ z^{'}(0) = 0 
+\end{array}\right.
+$$
+
+Transformando esse sistema em matrizes, temos:
+
+$$
+\left[ \begin{array}{c}
+y^{'}\\
+z^{'}
+\end{array} \right] =
+\left[\begin{array}{cc}
+1 & 0\\
+3 & -2
+\end{array}\right]\cdot
+\left[\begin{array}{c}
+z\\
+y
+\end{array}\right]
+$$
+
+Assim fazemos
+
+$$
+f\left(\left[ \begin{array}{c}
+y\\
+z
+\end{array} \right]\right) =
+\left[\begin{array}{cc}
+1 & 0\\
+3 & -2
+\end{array}\right]\cdot
+\left[\begin{array}{c}
+z\\
+y
+\end{array}\right]
+$$
+
+E pelo Método de Euler, usaremos a seguinte recorrência para resolvê-la:
+
+$$
+\left[
+\begin{array}{c}
+y_{k+1}\\
+z_{k+1}
+
+\end{array}\right] =
+\left[
+\begin{array}{c}
+y_{k}\\
+z_{k}
+\end{array}\right] + h\cdot
+f\left(\left[
+\begin{array}{c}
+y_{k}\\
+z_{k}
+\end{array}\right]\right)
+$$
 
 \newpage
 
-\chapter{Projeto 3 - Sistemas Lineares}
+Implementando um programa \textit{Octave} para resolvê - la, temos:
 
-Neste projeto vamos fazer um programa para resolver o sistema:
-
-\begin{center}
-
-$\left[ \begin{array}{ccccccccccccccccc}
-
-8x_1 & + & x_2 & + & x_3 & + & x_4 & + & x_5 & + & x_6 & + & x_7 & + & x_8 & = & 15 \\ x_1 & + & 8x_2 & + & x_3 & + & x_4 & + & x_5 & + & x_6 & + & x_7 & + & x_8 & = & 15 \\ x_1 & + & x_2 & + & 8x_3 & + & x_4 & + & x_5 & + & x_6 & + & x_7 & + & x_8 & = & 15 \\ x_1 & + & x_2 & + & x_3 & + & 8x_4 & + & x_5 & + & x_6 & + & x_7 & + & x_8 & = & 15 \\ x_1 & + & x_2 & + & x_3 & + & x_4 & + & 8x_5 & + & x_6 & + & x_7 & + & x_8 & = & 15 \\ x_1 & + & x_2 & + & x_3 & + & x_4 & + & x_5 & + & 8x_6 & + & x_7 & + & x_8 & = & 15 \\ x_1 & + & x_2 & + & x_3 & + & x_4 & + & x_5 & + & x_6 & + & 8x_7 & + & x_8 & = & 15 \\ x_1 & + & x_2 & + & x_3 & + & x_4 & + & x_5 & + & x_6 & + & x_7 & + & 8x_8 & = & 15
-
-\end{array} \right]$
-
-
-\end{center}
-
-O programa desenvolvido foi:
 \begin{verbatim}
-
-function y=GaussSeidel(a,b,Ep)
-  x0=b*0;
-  n=length(a);
-  m=linspace(1,1,length(b))';
-  while (norm(m)>Ep)
-    for t=1:n
-      p=0;
-      for i=1:t-1
-        p=p+a(t,i)*x0(i);
-      endfor
-      for i=t+1:n
-        p=p+a(t,i)*x0(i);
-      endfor
-      x(t)=(b(t)-p)\a(t,t);
-    endfor
-    m=x-x0;
-    x0=x;
-  endwhile
-  y=x;
- endfunction
- 
+function y=MEULER(h,x,y0,z0)
+  t=ceil(x/h);
+  Yn=[y0;z0];
+  S=[1 0;3 -2];
+  Ya=[Yn(2,1);Yn(1,1)];
+  f=S*Ya;
+  for i=1:t+1
+      Yn=Yn+h*f;
+     Ya=[Yn(2,1);Yn(1,1)];
+    f=S*Ya;
+  endfor
+  y=Yn(1);
+endfunction
 \end{verbatim}
 
-O programa foi salvo com o nome de \textbf{GaussSeidel.m} e para usá-lo digitamos \textbf{y = GaussSeidel(a,b,ep)} onde \textbf{a} é a matriz dos coeficientes, \textbf{b} é a matriz das constantes e \textbf{ep} é a precisão da norma.
+Neste programa indicamos o valor de $h$, de $x$ para a aproximação, de $y(0)$ e de $z(0)$ e resultado podemos ver através da figura \ref{octave3}
 
-O sistema dado foi resolvido declarando cada variável antes e o resultado podemos ver na figura \ref{octave3}.
-
-\begin{figure}[h]
+\begin{figure}[ht]
 
     \center
 
     \includegraphics[width=12cm]{octave3.png}
-    \caption{solução do sistema linear \label{octave3}}
+    \caption{Método de Euler \label{octave3}}
     
 \end{figure}
 
-
 \section{Resultado}
 
-Podemos perceber que o resultado é bem próximo de 1 para todos as variáveis, isto é, temos uma boa precisão com este programa.
+Com um pouco de trabalho algébrico é possível resolver a equação diferencial de 2ª ordem, ou seja: $y^{''} = 3y^{'} - 2y \Rightarrow y=c_1e^{2x} + c_2e^{x}$. Substituindo $y(0) = -1$ e $y^{'}(0) = 0$, encontraremos: 
+$$y=e^{2x} - 2\cdot e^{x}$$
+
+Calculando $y(1,2)$ na função acima encontraremos o valor: $y(1,2) = 4,3829$ que representa o valor real. Essa diferença se dá porque quando escolhemos $h = 0,1$ no \textit{Octave}, tivemos que dividir o intervalo entre o valor inicial e o valor final de $x$ em 12 partes e por isso o erro.Usando o mesmo programa, mas diminuindo o valor de $h$ no octave conseguimos uma aproximação mais próxima do valor real de $y(1,2)$.
+
+Vamos colocar outros valores para o $h$, simulando para $h = 0.01$ e $h = 0.001$ e podemos ver o resultado através da figura \ref{octave4}:
+
+\begin{figure}[ht]
+
+    \center
+
+    \includegraphics[width=12cm]{octave4.png}
+    \caption{Método de Euler com $h$ modificado\label{octave4}}
+    
+\end{figure}
+
+Este resultado é muito mais próximo do real. Podemos perceber então que o resultado depende muito do valor de $h$ e que o erro pode ser diminuido se o intervalo for menor e o valor de $h$ também.
 
 
-\newpage
 
 \end{document}
